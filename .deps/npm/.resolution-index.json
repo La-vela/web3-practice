@@ -1,0 +1,58 @@
+{
+  "code/test_vault/Vault.sol": {
+    "__sources__": {
+      "code/test_vault/Vault.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract Vault {\n    address public owner;\n\n    constructor() {\n        owner = msg.sender;\n    }\n\n    // ETH 입금 (직접 전송 시 자동 실행)\n    receive() external payable {}\n\n    // 현재 컨트랙트 잔액 확인\n    function getBalance() public view returns (uint256) {\n        return address(this).balance;\n    }\n\n    // 출금 (오너만 가능)\n    function withdraw() public {\n        require(msg.sender == owner, \"Only owner can withdraw\");\n\n        payable(owner).transfer(address(this).balance);\n    }\n}",
+        "file": "code/test_vault/Vault.sol"
+      }
+    }
+  },
+  "code/test_vault/Vault2.sol": {
+    "__sources__": {
+      "code/test_vault/Vault2.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract Vault {\n    address public owner;\n\n    event Deposited(address indexed from, uint256 amount);\n    event Withdrawn(address indexed to, uint256 amount);\n\n    constructor() {\n        owner = msg.sender;\n    }\n\n    receive() external payable {\n        emit Deposited(msg.sender, msg.value);\n    }\n\n    function getBalance() public view returns (uint256) {\n        return address(this).balance;\n    }\n\n    function withdraw() public {\n        require(msg.sender == owner, \"Only owner\");\n\n        uint256 amount = address(this).balance;\n\n        (bool success, ) = payable(owner).call{value: amount}(\"\");\n        require(success, \"Withdraw failed\");\n\n        emit Withdrawn(owner, amount);\n    }\n}",
+        "file": "code/test_vault/Vault2.sol"
+      }
+    }
+  },
+  "artifacts/payable/basic/guard.sol": {
+    "__sources__": {
+      "artifacts/payable/basic/guard.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract GuardedWallet {\r\n    address public owner;\r\n\r\n    constructor() {\r\n        owner = msg.sender;\r\n    }\r\n\r\n    // [핵심] 입구 컷을 담당하는 경비원 역할\r\n    modifier onlyOwner() {\r\n        require(msg.sender == owner, \"Only the owner can do this\");\r\n        _; // 통과하면 함수 본문 실행\r\n    }\r\n\r\n    receive() external payable {}\r\n\r\n    // 주인만 환불 가능하도록 modifier 적용\r\n    function withdraw() public onlyOwner {\r\n        payable(owner).transfer(address(this).balance);\r\n    }\r\n}",
+        "file": "artifacts/payable/basic/guard.sol"
+      }
+    }
+  },
+  "artifacts/payable/basic/wallet.sol": {
+    "__sources__": {
+      "artifacts/payable/basic/wallet.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract SimpleWallet {\r\n    // 컨트랙트 잔액 확인\r\n    function getBalance() public view returns (uint) {\r\n        return address(this).balance;\r\n    }\r\n\r\n    // 입금: 이더를 받을 때 실행됨\r\n    receive() external payable {}\r\n\r\n    // 환불: 잔액 전액을 호출자에게 전송\r\n    function withdrawAll() public {\r\n        payable(msg.sender).transfer(address(this).balance);\r\n    }\r\n}",
+        "file": "artifacts/payable/basic/wallet.sol"
+      }
+    }
+  },
+  "artifacts/payable/basic/guardedwallet.sol": {
+    "__sources__": {
+      "artifacts/payable/basic/guardedwallet.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract GuardedWallet {\r\n    address public owner;\r\n\r\n    constructor() {\r\n        owner = msg.sender;\r\n    }\r\n\r\n    // [핵심] 입구 컷을 담당하는 경비원 역할\r\n    modifier onlyOwner() {\r\n        require(msg.sender == owner, \"Only the owner can do this\");\r\n        _; // 통과하면 함수 본문 실행\r\n    }\r\n\r\n    receive() external payable {}\r\n\r\n    // 주인만 환불 가능하도록 modifier 적용\r\n    function withdraw() public onlyOwner {\r\n        payable(owner).transfer(address(this).balance);\r\n    }\r\n}",
+        "file": "artifacts/payable/basic/guardedwallet.sol"
+      }
+    }
+  },
+  "artifacts/payable/basic/simplewallet.sol": {
+    "__sources__": {
+      "artifacts/payable/basic/simplewallet.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract SimpleWallet {\r\n    // 컨트랙트 잔액 확인\r\n    function getBalance() public view returns (uint) {\r\n        return address(this).balance;\r\n    }\r\n\r\n    // 입금: 이더를 받을 때 실행됨\r\n    receive() external payable {}\r\n\r\n    // 환불: 잔액 전액을 호출자에게 전송\r\n    function withdrawAll() public {\r\n        payable(msg.sender).transfer(address(this).balance);\r\n    }\r\n}",
+        "file": "artifacts/payable/basic/simplewallet.sol"
+      }
+    }
+  },
+  "artifacts/payable/basic/basicpayable.sol": {
+    "__sources__": {
+      "artifacts/payable/basic/basicpayable.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract BasicPayable {\r\n    // 1. 돈을 받을 수 있게 해주는 특별한 함수 (Receive)\r\n    // 이 함수가 있어야 Remix의 'Value'를 통해 이더를 보낼 수 있습니다.\r\n    receive() external payable {}\r\n\r\n    // 2. 컨트랙트의 현재 잔액을 확인하는 함수\r\n    function getBalance() public view returns (uint) {\r\n        return address(this).balance;\r\n    }\r\n\r\n    // 3. 특정 주소로 돈을 직접 보내는 함수\r\n    // _to: 받는 사람 주소, _amount: 보낼 금액 (Wei 단위)\r\n    function transferTo(address payable _to, uint _amount) public {\r\n        require(address(this).balance >= _amount, \"Insufficient balance\");\r\n        \r\n        // _to 주소로 _amount만큼의 이더를 전송합니다.\r\n        _to.transfer(_amount);\r\n    }\r\n}",
+        "file": "artifacts/payable/basic/basicpayable.sol"
+      }
+    }
+  }
+}
