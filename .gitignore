@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Hardhat
+cache/
+artifacts/
+typechain/
+coverage/
+coverage.json
+
+# Foundry
+out/
+broadcast/
+cache_forge/
+lib/
+
+# Truffle
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+
+# Solidity coverage
+.coverage*
+coverage-final.json
+
+# Test outputs
+test-results/
+
+# Misc
+*.tsbuildinfo
