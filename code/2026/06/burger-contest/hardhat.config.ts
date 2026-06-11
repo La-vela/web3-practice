@@ -1,15 +1,23 @@
 import { HardhatUserConfig } from "hardhat/config";
-
-// 전체 툴박스 대신, 가장 핵심인 ethers 플러그인만 직접 불러오기
-
 import "@nomicfoundation/hardhat-toolbox";
-import type { HardhatUserConfig } from "hardhat/config";
+import * as dotenv from "dotenv";
+
+// .env 파일을 불러오는 코드입니다.
+dotenv.config();
 
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.28",
     settings: {
       evmVersion: "cancun",
+    },
+  },
+  networks: {
+    sepolia: {
+      // Alchemy에서 복사한 주소를 여기서 가져옵니다.
+      url: process.env.RPC_URL || "", 
+      // 메타마스크 개인키를 여기서 가져옵니다. .env에 없으면 빈 배열 사용.
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
 };
